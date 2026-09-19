@@ -51,8 +51,10 @@
 
   async function loadCrm() {
     if (!token()) { crm = await readJson('crm.json', {}); return; }
-    const r = await gh(`/contents/data/crm.json?ref=main&t=${Date.now()}`);
-    if (r.status === 404 || !r.ok) { crm = {}; crmSha = null; return; }
+    let r;
+    try { r = await gh(`/contents/data/crm.json?ref=main&t=${Date.now()}`); }
+    catch (e) { if (e.status === 404) { crm = {}; crmSha = null; return; } throw e; }
+    if (!r.ok) { crm = {}; crmSha = null; return; }
     const j = await r.json();
     crmSha = j.sha;
     crm = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(j.content.replace(/\n/g, '')), c => c.charCodeAt(0))) || '{}');

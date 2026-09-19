@@ -13,6 +13,21 @@ node server.mjs
 
 Dann http://localhost:4210 öffnen. Braucht nur Node (ab 18), keine Pakete.
 
+## Am Handy (GitHub)
+
+**https://madissna09-arch.github.io/webradar/** — gleiche Oberfläche, läuft ohne PC.
+Tippt man auf „Scannen", startet GitHub Actions den Scan (`.github/workflows/scan.yml`,
+Dauer 2–5 Min.), schreibt das Ergebnis nach `data/` und veröffentlicht die Seite neu.
+Status, Notizen und Merker speichert die Seite in `data/crm.json` über die GitHub-API.
+
+Einmal pro Gerät unter Zahnrad einen **Fine-grained Token** eintragen
+(github.com/settings/personal-access-tokens/new → Only select repositories: webradar →
+Actions und Contents: Read and write). Ohne Token nur Ansicht.
+
+Achtung: Das Repo ist öffentlich (sonst kein kostenloses Pages). Lead-Liste und Notizen
+kann jeder sehen, der den Link kennt. Keine privaten Dinge in Notizen schreiben.
+Lokal (`node server.mjs`) arbeitet mit denselben Dateien — vorher `git pull`, danach pushen.
+
 ## Was bei einem Scan passiert
 
 1. **Google Maps** — sucht „Branche in Ort“, bis zu 6 Seiten à 20 Treffer. Pro Betrieb:
