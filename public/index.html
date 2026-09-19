@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webradar</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-radar" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".6"/><path d="M12 12 19 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3h2.6l1.4 4.2-2 1.5a12 12 0 0 0 6.7 6.7l1.5-2 4.2 1.4v2.6A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11Z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="10" r="2.3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9s-1.2 6.4-3.7 9c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="i-ig" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></symbol>
+  <symbol id="i-fb" viewBox="0 0 24 24"><path d="M13.5 21v-7.5h2.6l.4-3h-3V8.6c0-.9.3-1.5 1.6-1.5h1.6V4.4c-.3 0-1.2-.1-2.3-.1-2.3 0-3.9 1.4-3.9 4v2.2H8v3h2.5V21" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-tt" viewBox="0 0 24 24"><path d="M14 3v11.5a3.5 3.5 0 1 1-3-3.46M14 3c.4 2.6 2.2 4.3 5 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m3.5 6 8.5 7 8.5-7" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.2-4A8 8 0 1 1 8.3 19Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19.5 8A8 8 0 0 0 4.3 10M4.5 16a8 8 0 0 0 15.2-2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M19.8 3.5V8h-4.5M4.2 20.5V16h4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8Z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="m9 4-5 2v14l5-2 6 2 5-2V4l-5 2-6-2Zm0 0v14m6-12v14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 3.5h12v17l-6-4-6 4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4.5 7h15M10 11v6m4-6v6M6.5 7l1 12.5h9L17.5 7M9.5 7V4.5h5V7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="brand"><svg class="brand-mark"><use href="#i-radar"/></svg><span>Webradar</span></div>
+  <form id="searchForm" class="search" autocomplete="off">
+    <label class="field grow">
+      <span>Branche</span>
+      <input id="branche" list="branchen" placeholder="z. B. Friseur, Döner, Autowerkstatt" required>
+    </label>
+    <label class="field grow">
+      <span>Ort</span>
+      <input id="ort" placeholder="z. B. Osnabrück" required>
+    </label>
+    <label class="field">
+      <span>Tiefe</span>
+      <select id="tiefe">
+        <option value="1">~20</option>
+        <option value="2">~40</option>
+        <option value="3" selected>~60</option>
+        <option value="4">~80</option>
+        <option value="5">~100</option>
+        <option value="6">~120</option>
+      </select>
+    </label>
+    <button class="btn primary" id="scanBtn" type="submit"><svg><use href="#i-search"/></svg><span>Scannen</span></button>
+  </form>
+  <button class="icon-btn" id="settingsBtn" title="Einstellungen"><svg><use href="#i-gear"/></svg></button>
+  <datalist id="branchen"></datalist>
+</header>
+
+<section id="progress" class="progress" hidden>
+  <div class="progress-head">
+    <div class="pulse"></div>
+    <strong id="progTitle">Suche läuft</strong>
+    <span id="progText" class="muted"></span>
+    <button class="btn ghost small" id="cancelBtn">Abbrechen</button>
+  </div>
+  <div class="bar"><div id="progBar"></div></div>
+  <ol id="log" class="log"></ol>
+</section>
+
+<div id="ghBanner" class="gh-banner" hidden>Nur Ansicht. Zum Scannen und Speichern oben rechts beim Zahnrad den GitHub-Schlüssel eintragen.</div>
+
+<main class="layout">
+  <section class="results">
+    <div class="kpis" id="kpis"></div>
+
+    <div class="toolbar">
+      <div class="scope">
+        <select id="scope" title="Welche Leads anzeigen"></select>
+      </div>
+      <div class="seg" id="webFilter">
+        <button data-v="all" class="on">Alle</button>
+        <button data-v="none">Keine Website</button>
+        <button data-v="social">Nur Social / Plattform</button>
+        <button data-v="broken">Kaputt</button>
+        <button data-v="outdated">Veraltet</button>
+        <button data-v="weak">Mängel</button>
+        <button data-v="good">Ordentlich</button>
+      </div>
+    </div>
+    <div class="toolbar second">
+      <div class="seg small" id="tierFilter">
+        <button data-v="all" class="on">Jeder Score</button>
+        <button data-v="hot">Heiß</button>
+        <button data-v="warm">Warm</button>
+        <button data-v="cold">Kalt</button>
+      </div>
+      <label class="mini">Min. Rezensionen <input id="minReviews" type="number" min="0" step="5" value="0"></label>
+      <select id="statusFilter" class="mini-select">
+        <option value="all">Jeder Status</option>
+      </select>
+      <label class="check"><input type="checkbox" id="hideChains" checked> Ketten ausblenden</label>
+      <div class="spacer"></div>
+      <div class="filter-search"><svg><use href="#i-search"/></svg><input id="q" placeholder="Name, Straße, Kategorie"></div>
+      <select id="sort" class="mini-select">
+        <option value="score">Nach Score</option>
+        <option value="reviews">Nach Rezensionen</option>
+        <option value="rating">Nach Bewertung</option>
+        <option value="name">Nach Name</option>
+      </select>
+      <div class="seg small icons" id="viewToggle">
+        <button data-v="list" class="on" title="Liste"><svg><use href="#i-list"/></svg></button>
+        <button data-v="map" title="Karte"><svg><use href="#i-map"/></svg></button>
+      </div>
+      <button class="btn ghost" id="exportBtn" title="Gefilterte Liste als CSV (Excel)"><svg><use href="#i-download"/></svg><span>CSV</span></button>
+    </div>
+
+    <div id="listView" class="table-wrap">
+      <table class="leads">
+        <thead><tr>
+          <th class="c-score">Score</th><th>Betrieb</th><th>Website</th><th class="c-rating">Google</th><th class="c-phone">Telefon</th><th class="c-social">Social</th><th class="c-status">Status</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty">
+        <svg><use href="#i-radar"/></svg>
+        <h2>Noch nichts gescannt</h2>
+        <p>Branche und Ort eingeben, dann geht der Radar über Google Maps, holt jeden Betrieb mit Bewertung, Telefon und Adresse und prüft danach jede Website auf Alter, Handy-Tauglichkeit, Impressum und Technik.</p>
+      </div>
+    </div>
+    <div id="mapView" class="map" hidden></div>
+  </section>
+
+  <aside id="drawer" class="drawer" hidden></aside>
+</main>
+
+<dialog id="settings">
+  <form method="dialog" class="settings">
+    <h2>Einstellungen</h2>
+    <p class="muted">Wird in die Ansprache-Texte eingesetzt. Bleibt nur in diesem Browser.</p>
+    <div id="ghSettings" class="gh-settings" hidden>
+      <label class="field"><span>GitHub-Schlüssel</span><input id="setToken" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>
+      <p class="muted small">Nötig zum Scannen und Speichern. Einmal anlegen unter
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → Fine-grained token</a>:
+        „Only select repositories“ → <b>webradar</b>, Berechtigungen <b>Actions</b> und <b>Contents</b> auf „Read and write“.
+        Bleibt nur auf diesem Gerät. <a id="repoLink" target="_blank" rel="noopener">Repo ansehen</a></p>
+    </div>
+    <label class="field"><span>Absender (Vorname/n)</span><input id="setName" placeholder="Madis und Simon"></label>
+    <label class="field"><span>Firma / Marke</span><input id="setBrand" placeholder="z. B. TAPVIEW"></label>
+    <label class="field"><span>Telefon für Rückruf</span><input id="setPhone" placeholder="0151 …"></label>
+    <label class="field"><span>Link zu Referenz / Muster (optional)</span><input id="setRef" placeholder="https://…"></label>
+    <div class="row-end"><button class="btn primary" value="ok">Speichern</button></div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="gh.js"></script>
+<script src="pitch.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
