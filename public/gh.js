@@ -107,10 +107,15 @@
     return { id, since };
   }
 
-  async function findRun(since) {
-    const r = await gh('/actions/workflows/scan.yml/runs?event=workflow_dispatch&per_page=10');
+  // Der Lauf traegt die Such-ID im Namen (run-name in scan.yml) — so erwischen wir bei
+  // zwei gleichzeitigen Scans sicher den eigenen.
+  async function findRun(since, id) {
+    const r = await gh('/actions/workflows/scan.yml/runs?event=workflow_dispatch&per_page=15');
     const j = await r.json();
-    return (j.workflow_runs || []).filter(x => Date.parse(x.created_at) >= since).sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))[0] || null;
+    const runs = (j.workflow_runs || []).filter(x => Date.parse(x.created_at) >= since - 20000);
+    return runs.find(x => (x.display_title || '').includes(id))
+      || runs.sort((a, b) => Date.parse(a.created_at) - Date.parse(b.created_at))[0]
+      || null;
   }
 
   async function runSteps(runId) {

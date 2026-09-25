@@ -343,7 +343,9 @@
   // ---------- Suche starten + Live-Stream
   $('#searchForm').addEventListener('submit', async e => {
     e.preventDefault();
-    if (state.job) return;
+    if (state.job || state.starting) return;
+    state.starting = true;
+    $('#scanBtn').disabled = true;
     const body = { branche: $('#branche').value, ort: $('#ort').value, tiefe: +$('#tiefe').value };
     try { localStorage.setItem('webradar.last', JSON.stringify(body)); } catch {}
     try {
@@ -356,7 +358,10 @@
       }
       const { id } = await api('/api/jobs', { method: 'POST', body });
       startStream(id, body);
-    } catch (err) { toast(err.message); }
+    } catch (err) {
+      toast(err.message);
+      $('#scanBtn').disabled = false;
+    } finally { state.starting = false; }
   });
 
   // GitHub-Modus: Actions-Lauf beobachten, danach Daten neu laden. Uebersteht auch Neuladen der Seite.
@@ -378,7 +383,7 @@
     for (;;) {
       await new Promise(r => setTimeout(r, 5000));
       let run;
-      try { run = await GH.findRun(since); } catch (err) { $('#progText').textContent = err.message; continue; }
+      try { run = await GH.findRun(since, id); } catch (err) { $('#progText').textContent = err.message; continue; }
       if (!run) { $('#progText').textContent = 'Warte auf GitHub …'; if (Date.now() - since > 3 * 60e3) return finish(false, 'GitHub hat den Scan nicht gestartet'); continue; }
       state.runId = run.id;
       if (run.status !== 'completed') {
@@ -391,9 +396,13 @@
       }
       if (run.conclusion === 'cancelled') return finish(false, 'Abgebrochen');
       $('#progText').textContent = 'Lade Ergebnisse …';
-      await new Promise(r => setTimeout(r, 1500));
-      await load();
-      const s = state.searches.find(x => x.id === id);
+      // Der Lauf schiebt das Ergebnis erst noch ins Repo — ein paar Anläufe geben.
+      let s = null;
+      for (let i = 0; i < 6 && !s; i++) {
+        await new Promise(r => setTimeout(r, i ? 5000 : 1500));
+        await load();
+        s = state.searches.find(x => x.id === id);
+      }
       if (run.conclusion !== 'success' || !s || s.status === 'fehler') {
         $('#log').insertAdjacentHTML('afterbegin', `<li>${esc(s?.error || 'Scan fehlgeschlagen')} — <a href="${esc(run.html_url)}" target="_blank" rel="noopener">Protokoll bei GitHub</a></li>`);
         return finish(false, 'Fehler beim Scan');
