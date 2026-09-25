@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p _site/data
           cp -r public/* _site/
-          cp data/*.json _site/data/ 2>/dev/null || true
+          cp -r data/. _site/data/ 2>/dev/null || true
           touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
