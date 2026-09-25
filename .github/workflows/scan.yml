@@ -60,7 +60,8 @@ jobs:
             git fetch -q origin main
             node merge-data.mjs origin/main
             git reset -q --soft origin/main
-            git add data/leads.json data/searches.json
+            node lead.mjs brief 15 > data/top-leads.md
+            git add data/leads.json data/searches.json data/top-leads.md
             if git diff --cached --quiet; then echo "Keine Aenderungen"; exit 0; fi
             git commit -q -m "$MSG"
             if git push -q; then echo "Gespeichert"; exit 0; fi

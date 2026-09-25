@@ -62,6 +62,24 @@ Lokal (`node server.mjs`) arbeitet mit denselben Dateien — vorher `git pull`, 
 
 CSV-Export (Excel-tauglich, Semikolon) nimmt immer die aktuell gefilterte Liste.
 
+## Mit einer Claude-Sitzung arbeiten
+
+```
+node lead.mjs top 10       beste Leads mit Score, Website-Lage, Bewertung
+node lead.mjs "<Name>"     kompletter Steckbrief (Adresse, Telefon, Öffnungszeiten,
+                           Bewertung, Social Media, Website-Mängel, Koordinaten)
+node lead.mjs top --json   maschinenlesbar
+node lead.mjs brief 15     Steckbriefe am Stück (erzeugt data/top-leads.md)
+```
+
+Der Skill **lead-website** (in `~/.claude/skills/`) kennt den ganzen Ablauf: scannen,
+besten Lead aussuchen, Muster-Website daraus bauen, prüfen. In einer neuen Sitzung reicht
+„scanne Friseure in Melle und bau dem obersten eine Website".
+
+Ein Chat ohne Dateizugriff liest die Daten über die Pages-Adresse:
+`…/webradar/data/top-leads.md` (lesbare Steckbriefe der besten 15) oder
+`…/webradar/data/leads.json` (alles).
+
 ## Grenzen — ehrlich
 
 - **Google-Daten kommen aus der Maps-Webseite, nicht aus einer offiziellen API.** Das ist
